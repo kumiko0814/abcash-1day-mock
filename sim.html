@@ -1,0 +1,323 @@
+<title>あなたの手残り診断｜ABCash 1day マネートレーニング</title>
+<style>
+:root{--bg:#eaf3fa;--bg2:#f1f7fb;--pink-bg:#fbeef1;--navy:#26405f;--navy-d:#1d3149;
+--pink:#cf8f9c;--pink-d:#bd7886;--blue:#7fb0d2;--ink:#4a4446;--line:#dde8f1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.85;font-size:16px;
+font-family:"Yu Gothic",YuGothic,"Hiragino Sans","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+-webkit-text-size-adjust:100%}
+.demo{background:var(--navy-d);color:#fff;padding:11px 14px;font-size:12.5px;text-align:center;line-height:1.7}
+.demo b{color:#ffd9e2}
+.demo button{margin-top:8px;background:#fff;color:var(--navy-d);border:none;border-radius:20px;
+padding:7px 16px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.wrap{max-width:460px;margin:0 auto;padding:0 16px 70px}
+.hero{text-align:center;padding:30px 6px 20px}
+.hero .kick{display:inline-block;background:var(--pink-bg);color:var(--pink-d);font-size:11.5px;
+font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:.04em}
+h1{font-size:25px;color:var(--navy-d);margin:14px 0 10px;line-height:1.45;font-weight:700}
+.hero p{margin:0;font-size:13.5px;color:#68737e}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin:14px 0}
+label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin:0 0 8px}
+label span{font-weight:400;color:#8b96a1;font-size:11.5px}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+.opts button{flex:1 1 auto;min-width:74px;background:#f4f9fc;border:1.5px solid var(--line);color:var(--ink);
+border-radius:10px;padding:11px 6px;font:inherit;font-size:13.5px;cursor:pointer;line-height:1.4}
+.opts button.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+.go{width:100%;background:var(--pink-d);color:#fff;border:none;border-radius:12px;padding:16px;
+font:inherit;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.02em}
+.go:disabled{background:#c9d6e0;cursor:default}
+.note{font-size:11.5px;color:#8b96a1;text-align:center;margin:10px 0 0;line-height:1.7}
+#result{display:none}
+.rhead{text-align:center;padding:8px 0 4px}
+.rhead .lab{font-size:12px;color:var(--pink-d);font-weight:700;letter-spacing:.08em}
+.rhead h2{font-size:19px;color:var(--navy-d);margin:6px 0 0;font-weight:700}
+.big{text-align:center;padding:6px 0}
+.big .t{font-size:12.5px;color:#68737e;margin-bottom:2px}
+.big .v{font-size:40px;color:var(--navy-d);font-weight:700;line-height:1.2;letter-spacing:-.01em}
+.big .v small{font-size:17px;font-weight:700;margin-left:2px}
+.big .s{font-size:12.5px;color:#8b96a1;margin-top:2px}
+.bd{border-top:1px dashed #e2ecf4;margin:16px 0 0;padding-top:14px}
+.li{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;padding:6px 0}
+.li span{color:#68737e;font-size:13.5px}
+.li b{color:var(--navy-d);font-size:16px;font-variant-numeric:tabular-nums}
+.hl{background:var(--pink-bg);border-radius:12px;padding:14px 16px;margin-top:14px;text-align:center}
+.hl .t{font-size:12.5px;color:var(--pink-d);font-weight:700}
+.hl .v{font-size:29px;color:var(--navy-d);font-weight:700;line-height:1.3}
+.hl .v small{font-size:15px}
+.soft{font-size:13px;color:#5b6672;background:#f1f7fb;border-radius:12px;padding:13px 15px;margin-top:14px;line-height:1.8}
+
+/* ===== ぼかし（予約前） ===== */
+.lockwrap{position:relative;margin-top:14px}
+.locked{filter:blur(7px);opacity:.85;user-select:none;pointer-events:none;transition:filter .5s,opacity .5s}
+.veil{position:absolute;left:0;right:0;top:0;bottom:0;
+background:linear-gradient(180deg,rgba(241,247,251,0) 0%,rgba(241,247,251,.72) 28%,rgba(241,247,251,.97) 55%);
+display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 14px 6px;text-align:center}
+.veil .ic{font-size:24px}
+.veil .h{font-size:16.5px;font-weight:700;color:var(--navy-d);margin:6px 0 4px;line-height:1.5}
+.veil .p{font-size:12.5px;color:#68737e;margin:0 0 14px;line-height:1.8}
+.veil .cta{display:block;width:100%;background:var(--pink-d);color:#fff;text-decoration:none;
+border-radius:12px;padding:15px;font-weight:700;font-size:15.5px}
+.veil .sub{font-size:11.5px;color:#8b96a1;margin:9px 0 0;line-height:1.7}
+body.unlocked .locked{filter:none;opacity:1;pointer-events:auto}
+body.unlocked .veil{display:none}
+.ubadge{display:none;background:#e6f2ee;color:#2f7a63;font-size:12px;font-weight:700;
+border-radius:10px;padding:9px 12px;text-align:center;margin-top:14px}
+body.unlocked .ubadge{display:block}
+.foot{font-size:11px;color:#9aa4ae;text-align:center;padding:24px 8px 0;line-height:1.8}
+@media(max-width:400px){h1{font-size:22px}.big .v{font-size:34px}}
+@media(prefers-color-scheme:dark){body{background:#eaf3fa;color:#4a4446}}
+</style>
+<div style="text-align:center;padding:10px 12px 0"><a href="index.html" style="font-size:12px;color:#26405f">← モックアップ一覧にもどる</a></div>
+
+<div class="demo">
+  これは確認用のモックです。<b>予約前（ぼかし）</b>と<b>予約後（完全版）</b>を切り替えられます
+  <br><button id="tg">予約後の画面を見る</button>
+</div>
+
+<div class="wrap">
+
+<div class="hero">
+  <span class="kick">1day マネートレーニングにご参加の方へ</span>
+  <h1>あなたの手残り、<br>今年いくらですか？</h1>
+  <p>3つ選ぶだけ・30秒でわかりますよ☺️</p>
+</div>
+
+<div class="card" id="form">
+  <label>年収（額面）<span>／ おおよそで大丈夫です</span></label>
+  <div class="opts" data-k="income">
+    <button data-v="2500000">250万</button><button data-v="3000000">300万</button>
+    <button data-v="4000000">400万</button><button data-v="5000000">500万</button>
+    <button data-v="6000000">600万</button><button data-v="8000000">800万</button>
+  </div>
+
+  <label>年代</label>
+  <div class="opts" data-k="age">
+    <button data-v="25">20代</button><button data-v="35">30代</button>
+    <button data-v="45">40代</button><button data-v="55">50代</button>
+  </div>
+
+  <label>いま、貯金にまわせているのは<span>／ 月あたり</span></label>
+  <div class="opts" data-k="save">
+    <button data-v="0">0円</button><button data-v="10000">〜1万</button>
+    <button data-v="30000">1〜3万</button><button data-v="50000">3〜5万</button>
+    <button data-v="80000">5万〜</button>
+  </div>
+
+  <button class="go" id="go" disabled>結果を見る</button>
+  <p class="note">入力はこれだけです。個人情報は必要ありません🌷</p>
+</div>
+
+<div id="result">
+
+  <!-- ===== 無料で見える部分 ===== -->
+  <div class="card">
+    <div class="rhead">
+      <p class="lab">STEP 1／今年のあなた</p>
+      <h2>お給料から引かれている額</h2>
+    </div>
+    <div class="big">
+      <div class="t">年収 <span id="inc"></span> の方の場合</div>
+      <div class="v" id="deduct">—<small>万円</small></div>
+      <div class="s">が、1年で引かれています</div>
+    </div>
+    <div class="bd">
+      <div class="li"><span>社会保険料</span><b id="d1">—</b></div>
+      <div class="li"><span>所得税</span><b id="d2">—</b></div>
+      <div class="li"><span>住民税</span><b id="d3">—</b></div>
+    </div>
+    <div class="hl">
+      <div class="t">つまり、月におよそ</div>
+      <div class="v" id="perm">—<small>万円</small></div>
+    </div>
+    <div class="soft">
+      毎月の明細にのっている数字ですが、1年ぶんを合計して見たことのある方は
+      ほとんどいらっしゃいません☺️<br>
+      社会保険料は税金ではなくて、健康保険や年金としてご自身とご家族に戻ってくるお金ですよ🌷
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="rhead">
+      <p class="lab">STEP 2／手取り</p>
+      <h2>今年、手元に残るお金</h2>
+    </div>
+    <div class="big">
+      <div class="v" id="net">—<small>万円</small></div>
+      <div class="s">月におよそ <span id="netm"></span> です</div>
+    </div>
+  </div>
+
+  <!-- ===== ここからぼかし ===== -->
+  <div class="lockwrap">
+    <div class="locked">
+
+      <div class="card">
+        <div class="rhead">
+          <p class="lab">STEP 3／来年とその先</p>
+          <h2>2027年、いくら引かれるか</h2>
+        </div>
+        <div class="big">
+          <div class="t">増税ぶんを反映した手取り</div>
+          <div class="v" id="net27">—<small>万円</small></div>
+          <div class="s">今年より <span id="diff27"></span> 少なくなります</div>
+        </div>
+        <div class="bd">
+          <div class="li"><span>防衛特別所得税（2027年〜）</span><b id="x1">—</b></div>
+          <div class="li"><span>子ども・子育て支援金</span><b id="x2">—</b></div>
+          <div class="li"><span>社会保険料の引き上げぶん</span><b id="x3">—</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="rhead">
+          <p class="lab">STEP 4／この1年で貯まる額</p>
+          <h2>いまのペースだと</h2>
+        </div>
+        <div class="big">
+          <div class="v" id="year1">—<small>万円</small></div>
+          <div class="s">1年後の貯金額の見込みです</div>
+        </div>
+        <div class="bd">
+          <div class="li"><span>5年後</span><b id="y5">—</b></div>
+          <div class="li"><span>10年後</span><b id="y10">—</b></div>
+          <div class="li"><span>65歳のとき</span><b id="y65">—</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="rhead">
+          <p class="lab">STEP 5／あなたの伸びしろ</p>
+          <h2>いま直せるのは、この3つ</h2>
+        </div>
+        <div class="bd" style="border-top:none;padding-top:4px">
+          <div class="li"><span>① 口座の分けかた</span><b>あと◯万円</b></div>
+          <div class="li"><span>② 固定費の見直し</span><b>あと◯万円</b></div>
+          <div class="li"><span>③ 使っていない控除</span><b>あと◯万円</b></div>
+        </div>
+        <div class="hl">
+          <div class="t">3つぜんぶ直すと、1年で</div>
+          <div class="v">＋◯◯<small>万円</small></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="veil">
+      <div class="ic">🔒</div>
+      <p class="h">この先は、ご予約いただいた方に<br>お渡ししています</p>
+      <p class="p">
+        2027年の手取り／この1年で貯まる額／65歳までの見通し<br>
+        そして、あなたが今すぐ直せる3つ
+      </p>
+      <a class="cta" href="#">1分で予約して、続きを見る</a>
+      <p class="sub">
+        1day マネートレーニング（オンライン60〜90分・1対1）<br>
+        受講に費用はかかりません／金融商品の販売はいたしません
+      </p>
+    </div>
+  </div>
+
+  <div class="ubadge">✓ 完全版が開きました（予約後の表示です）</div>
+
+  <p class="foot">
+    ※ 概算です。会社員・扶養1名・協会けんぽを前提にした試算のため、実際の金額はご家庭の状況で変わります<br>
+    ※ 国税庁・厚生労働省・協会けんぽの公表資料をもとに算出しています
+  </p>
+</div>
+
+</div>
+
+<script>
+var S = {income:null, age:null, save:null};
+
+document.querySelectorAll('.opts').forEach(function(g){
+  var k = g.getAttribute('data-k');
+  g.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){
+      g.querySelectorAll('button').forEach(function(o){o.classList.remove('on');});
+      b.classList.add('on');
+      S[k] = parseInt(b.getAttribute('data-v'), 10);
+      document.getElementById('go').disabled =
+        (S.income === null || S.age === null || S.save === null);
+    });
+  });
+});
+
+function man(y){ return (Math.round(y/1000)/10).toFixed(1); }
+function manInt(y){ return Math.round(y/10000); }
+
+// 給与所得控除
+function kyuyoKojo(inc){
+  if(inc <= 1625000) return 550000;
+  if(inc <= 1800000) return inc*0.4 - 100000;
+  if(inc <= 3600000) return inc*0.3 + 80000;
+  if(inc <= 6600000) return inc*0.2 + 440000;
+  if(inc <= 8500000) return inc*0.1 + 1100000;
+  return 1950000;
+}
+// 所得税（累進・復興特別所得税2.1%込み）
+function shotokuzei(k){
+  if(k <= 0) return 0;
+  var r, c;
+  if(k <= 1950000){ r=0.05; c=0; }
+  else if(k <= 3300000){ r=0.10; c=97500; }
+  else if(k <= 6950000){ r=0.20; c=427500; }
+  else if(k <= 9000000){ r=0.23; c=636000; }
+  else if(k <= 18000000){ r=0.33; c=1536000; }
+  else { r=0.40; c=2796000; }
+  return Math.max(0, (k*r - c) * 1.021);
+}
+
+function calc(inc, shaRate, boei, shien){
+  var sha = inc * shaRate;
+  var kyu = inc - kyuyoKojo(inc);
+  var kA = Math.max(0, kyu - sha - 580000);   // 所得税：基礎控除58万
+  var kB = Math.max(0, kyu - sha - 430000);   // 住民税：基礎控除43万
+  var st = shotokuzei(kA) * boei;
+  var jt = kB * 0.10 + 5000;
+  var shienGaku = inc * shien;
+  return {sha:sha + shienGaku, st:st, jt:jt, shien:shienGaku,
+          total: sha + shienGaku + st + jt, net: inc - sha - shienGaku - st - jt};
+}
+
+document.getElementById('go').addEventListener('click', function(){
+  var inc = S.income;
+
+  // 今年（2026）：社保15.23% ＋ 子育て支援金0.23%
+  var now = calc(inc, 0.1523, 1.00, 0.0023);
+  // 2027：防衛特別所得税＋1%、社保引き上げ、支援金 満額
+  var next = calc(inc, 0.1560, 1.01, 0.0035);
+
+  document.getElementById('inc').textContent = manInt(inc) + '万円';
+  document.getElementById('deduct').innerHTML = man(now.total) + '<small>万円</small>';
+  document.getElementById('d1').textContent = man(now.sha) + '万円';
+  document.getElementById('d2').textContent = man(now.st) + '万円';
+  document.getElementById('d3').textContent = man(now.jt) + '万円';
+  document.getElementById('perm').innerHTML = (Math.round(now.total/12/1000)/10).toFixed(1) + '<small>万円</small>';
+  document.getElementById('net').innerHTML = man(now.net) + '<small>万円</small>';
+  document.getElementById('netm').textContent = (Math.round(now.net/12/1000)/10).toFixed(1) + '万円';
+
+  document.getElementById('net27').innerHTML = man(next.net) + '<small>万円</small>';
+  document.getElementById('diff27').textContent = man(now.net - next.net) + '万円';
+  document.getElementById('x1').textContent = man(next.st - now.st) + '万円';
+  document.getElementById('x2').textContent = man(next.shien - now.shien) + '万円';
+  document.getElementById('x3').textContent = man((next.sha - next.shien) - (now.sha - now.shien)) + '万円';
+
+  var yr = S.save * 12;
+  document.getElementById('year1').innerHTML = manInt(yr) + '<small>万円</small>';
+  document.getElementById('y5').textContent  = manInt(yr*5) + '万円';
+  document.getElementById('y10').textContent = manInt(yr*10) + '万円';
+  document.getElementById('y65').textContent = manInt(yr * Math.max(0, 65 - S.age)) + '万円';
+
+  document.getElementById('form').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  window.scrollTo(0, 0);
+});
+
+var tg = document.getElementById('tg');
+tg.addEventListener('click', function(){
+  document.body.classList.toggle('unlocked');
+  tg.textContent = document.body.classList.contains('unlocked')
+    ? '予約前の画面に戻す' : '予約後の画面を見る';
+});
+</script>
