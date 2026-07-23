@@ -45,21 +45,19 @@ font:inherit;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.02em}
 .hl .v{font-size:29px;color:var(--navy-d);font-weight:700;line-height:1.3}
 .hl .v small{font-size:15px}
 .soft{font-size:13px;color:#5b6672;background:#f1f7fb;border-radius:12px;padding:13px 15px;margin-top:14px;line-height:1.8}
+.locknote{font-size:12px;color:#8b96a1;text-align:center;margin:10px 0 0}
 
-/* ===== ぼかし（予約前） ===== */
-.lockwrap{position:relative;margin-top:14px}
-.locked{filter:blur(7px);opacity:.85;user-select:none;pointer-events:none;transition:filter .5s,opacity .5s}
-.veil{position:absolute;left:0;right:0;top:0;bottom:0;
-background:linear-gradient(180deg,rgba(241,247,251,0) 0%,rgba(241,247,251,.72) 28%,rgba(241,247,251,.97) 55%);
-display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 14px 6px;text-align:center}
-.veil .ic{font-size:24px}
-.veil .h{font-size:16.5px;font-weight:700;color:var(--navy-d);margin:6px 0 4px;line-height:1.5}
-.veil .p{font-size:12.5px;color:#68737e;margin:0 0 14px;line-height:1.8}
-.veil .cta{display:block;width:100%;background:var(--pink-d);color:#fff;text-decoration:none;
+/* ===== 数字だけをぼかす（占いサイト方式） ===== */
+.lk{filter:blur(7px);color:var(--navy-d);transition:filter .5s;user-select:none}
+body.unlocked .lk{filter:none;user-select:auto}
+.gate{background:var(--pink-bg);border:1px solid #f0d8de;border-radius:14px;padding:18px 16px;margin-top:14px;text-align:center}
+.gate .ic{font-size:22px}
+.gate .h{font-size:15.5px;font-weight:700;color:var(--navy-d);margin:6px 0 4px;line-height:1.55}
+.gate .p{font-size:12px;color:#68737e;margin:0 0 13px;line-height:1.8}
+.gate .cta{display:block;width:100%;background:var(--pink-d);color:#fff;text-decoration:none;
 border-radius:12px;padding:15px;font-weight:700;font-size:15.5px}
-.veil .sub{font-size:11.5px;color:#8b96a1;margin:9px 0 0;line-height:1.7}
-body.unlocked .locked{filter:none;opacity:1;pointer-events:auto}
-body.unlocked .veil{display:none}
+.gate .sub{font-size:11px;color:#8b96a1;margin:9px 0 0;line-height:1.7}
+body.unlocked .gate{display:none}
 .ubadge{display:none;background:#e6f2ee;color:#2f7a63;font-size:12px;font-weight:700;
 border-radius:10px;padding:9px 12px;text-align:center;margin-top:14px}
 body.unlocked .ubadge{display:block}
@@ -70,7 +68,7 @@ body.unlocked .ubadge{display:block}
 <div style="text-align:center;padding:10px 12px 0"><a href="index.html" style="font-size:12px;color:#26405f">← モックアップ一覧にもどる</a></div>
 
 <div class="demo">
-  これは確認用のモックです。<b>予約前（ぼかし）</b>と<b>予約後（完全版）</b>を切り替えられます
+  これは確認用のモックです。<b>予約前（数字がぼかし）</b>と<b>予約後（完全版）</b>を切り替えられます
   <br><button id="tg">予約後の画面を見る</button>
 </div>
 
@@ -78,8 +76,8 @@ body.unlocked .ubadge{display:block}
 
 <div class="hero">
   <span class="kick">1day マネートレーニングにご参加の方へ</span>
-  <h1>あなたの手残り、<br>今年いくらですか？</h1>
-  <p>3つ選ぶだけ・30秒でわかりますよ☺️</p>
+  <h1>あなたの手残り、<br>ちゃんと知っていますか？</h1>
+  <p>4つ選ぶだけ・30秒でわかりますよ☺️</p>
 </div>
 
 <div class="card" id="form">
@@ -103,13 +101,18 @@ body.unlocked .ubadge{display:block}
     <button data-v="80000">5万〜</button>
   </div>
 
+  <label>お子さまは<span>／ これからの想定に使います</span></label>
+  <div class="opts" data-k="kids">
+    <button data-v="0">いない</button><button data-v="1">いる</button>
+  </div>
+
   <button class="go" id="go" disabled>結果を見る</button>
   <p class="note">入力はこれだけです。個人情報は必要ありません🌷</p>
 </div>
 
 <div id="result">
 
-  <!-- ===== 無料で見える部分 ===== -->
+  <!-- ===== 無料で見える（今の話） ===== -->
   <div class="card">
     <div class="rhead">
       <p class="lab">STEP 1／今年のあなた</p>
@@ -124,10 +127,6 @@ body.unlocked .ubadge{display:block}
       <div class="li"><span>社会保険料</span><b id="d1">—</b></div>
       <div class="li"><span>所得税</span><b id="d2">—</b></div>
       <div class="li"><span>住民税</span><b id="d3">—</b></div>
-    </div>
-    <div class="hl">
-      <div class="t">つまり、月におよそ</div>
-      <div class="v" id="perm">—<small>万円</small></div>
     </div>
     <div class="soft">
       毎月の明細にのっている数字ですが、1年ぶんを合計して見たことのある方は
@@ -145,69 +144,51 @@ body.unlocked .ubadge{display:block}
       <div class="v" id="net">—<small>万円</small></div>
       <div class="s">月におよそ <span id="netm"></span> です</div>
     </div>
+    <div class="li" style="border-top:1px dashed #e2ecf4;margin-top:14px;padding-top:14px">
+      <span>いま、貯金にまわせているのは（月）</span><b id="savem">—</b></div>
   </div>
 
-  <!-- ===== ここからぼかし ===== -->
-  <div class="lockwrap">
-    <div class="locked">
+  <!-- ===== ここから数字がぼかし（これからの話） ===== -->
+  <div class="card">
+    <div class="rhead">
+      <p class="lab">STEP 3／これから</p>
+      <h2 id="s3h">結婚と子育てを想定すると</h2>
+    </div>
+    <p class="locknote">項目はそのまま見られます。金額は、ご予約でひらきます🔒</p>
+    <div class="bd" style="padding-top:6px">
+      <div class="li" id="rowmarry"><span>結婚にかかる費用（これから）</span><b>約 <span class="lk" id="marry">340</span> 万円</b></div>
+      <div class="li"><span id="childlbl">子ども1人を大学まで育てる費用</span><b>約 <span class="lk" id="child">2900</span> 万円</b></div>
+      <div class="li"><span>そのうち、貯金で備える教育費</span><b>約 <span class="lk" id="edu">1100</span> 万円</b></div>
+    </div>
+  </div>
 
-      <div class="card">
-        <div class="rhead">
-          <p class="lab">STEP 3／来年とその先</p>
-          <h2>2027年、いくら引かれるか</h2>
-        </div>
-        <div class="big">
-          <div class="t">増税ぶんを反映した手取り</div>
-          <div class="v" id="net27">—<small>万円</small></div>
-          <div class="s">今年より <span id="diff27"></span> 少なくなります</div>
-        </div>
-        <div class="bd">
-          <div class="li"><span>防衛特別所得税（2027年〜）</span><b id="x1">—</b></div>
-          <div class="li"><span>子ども・子育て支援金</span><b id="x2">—</b></div>
-          <div class="li"><span>社会保険料の引き上げぶん</span><b id="x3">—</b></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="rhead">
-          <p class="lab">STEP 4／この1年で貯まる額</p>
-          <h2>いまのペースだと</h2>
-        </div>
-        <div class="big">
-          <div class="v" id="year1">—<small>万円</small></div>
-          <div class="s">1年後の貯金額の見込みです</div>
-        </div>
-        <div class="bd">
-          <div class="li"><span>5年後</span><b id="y5">—</b></div>
-          <div class="li"><span>10年後</span><b id="y10">—</b></div>
-          <div class="li"><span>65歳のとき</span><b id="y65">—</b></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="rhead">
-          <p class="lab">STEP 5／あなたの伸びしろ</p>
-          <h2>いま直せるのは、この3つ</h2>
-        </div>
-        <div class="bd" style="border-top:none;padding-top:4px">
-          <div class="li"><span>① 口座の分けかた</span><b>あと◯万円</b></div>
-          <div class="li"><span>② 固定費の見直し</span><b>あと◯万円</b></div>
-          <div class="li"><span>③ 使っていない控除</span><b>あと◯万円</b></div>
-        </div>
-        <div class="hl">
-          <div class="t">3つぜんぶ直すと、1年で</div>
-          <div class="v">＋◯◯<small>万円</small></div>
-        </div>
-      </div>
-
+  <div class="card">
+    <div class="rhead">
+      <p class="lab">STEP 4／毎月いくら？</p>
+      <h2>この先のために、毎月そなえたい額</h2>
+    </div>
+    <div class="big">
+      <div class="t">いまの暮らしを続けながらだと</div>
+      <div class="v">毎月 <span class="lk" id="needm">4.6</span><small>万円</small></div>
+      <div class="s">貯金しておきたい計算です</div>
+    </div>
+    <div class="bd">
+      <div class="li"><span>いまの貯金（月・あなたの入力）</span><b id="savem2">—</b></div>
+      <div class="li"><span>そなえたい額（月）</span><b>約 <span class="lk" id="needm2">4.6</span> 万円</b></div>
+      <div class="li"><span id="gaplbl">あと、毎月ちかづけたい額</span><b>約 <span class="lk" id="gap">1.6</span> 万円</b></div>
     </div>
 
-    <div class="veil">
+    <div class="soft">
+      推し活や旅行を、がまんしましょうというお話ではないんです☺️<br>
+      いまのお金の「置き場所」を少し変えるだけで、この差はぐっと縮められますよ🌷
+    </div>
+
+    <div class="gate">
       <div class="ic">🔒</div>
-      <p class="h">この先は、ご予約いただいた方に<br>お渡ししています</p>
+      <p class="h">この先の金額は、ご予約いただいた方に<br>お見せしています</p>
       <p class="p">
-        2027年の手取り／この1年で貯まる額／65歳までの見通し<br>
-        そして、あなたが今すぐ直せる3つ
+        結婚・子育てにかかる金額／毎月そなえたい額／<br>
+        いまの手取りから、それを引いて残るお金
       </p>
       <a class="cta" href="#">1分で予約して、続きを見る</a>
       <p class="sub">
@@ -215,20 +196,21 @@ body.unlocked .ubadge{display:block}
         受講に費用はかかりません／金融商品の販売はいたしません
       </p>
     </div>
+    <div class="ubadge">✓ 金額が開きました（予約後の表示です）</div>
   </div>
 
-  <div class="ubadge">✓ 完全版が開きました（予約後の表示です）</div>
-
   <p class="foot">
-    ※ 概算です。会社員・扶養1名・協会けんぽを前提にした試算のため、実際の金額はご家庭の状況で変わります<br>
-    ※ 国税庁・厚生労働省・協会けんぽの公表資料をもとに算出しています
+    ※ 概算です。会社員・扶養の状況・お住まいなどで実際の金額は変わります<br>
+    ※ 税金・社会保険料：国税庁／厚生労働省／協会けんぽ の公表資料より<br>
+    ※ 子育て費用：文部科学省「令和5年度子供の学習費調査」／内閣府「子育て費用に関する調査」より<br>
+    ※ 結婚費用：ゼクシィ結婚トレンド調査2024（挙式・披露宴 総額）より
   </p>
 </div>
 
 </div>
 
 <script>
-var S = {income:null, age:null, save:null};
+var S = {income:null, age:null, save:null, kids:null};
 
 document.querySelectorAll('.opts').forEach(function(g){
   var k = g.getAttribute('data-k');
@@ -238,7 +220,7 @@ document.querySelectorAll('.opts').forEach(function(g){
       b.classList.add('on');
       S[k] = parseInt(b.getAttribute('data-v'), 10);
       document.getElementById('go').disabled =
-        (S.income === null || S.age === null || S.save === null);
+        (S.income===null || S.age===null || S.save===null || S.kids===null);
     });
   });
 });
@@ -246,7 +228,6 @@ document.querySelectorAll('.opts').forEach(function(g){
 function man(y){ return (Math.round(y/1000)/10).toFixed(1); }
 function manInt(y){ return Math.round(y/10000); }
 
-// 給与所得控除
 function kyuyoKojo(inc){
   if(inc <= 1625000) return 550000;
   if(inc <= 1800000) return inc*0.4 - 100000;
@@ -255,7 +236,6 @@ function kyuyoKojo(inc){
   if(inc <= 8500000) return inc*0.1 + 1100000;
   return 1950000;
 }
-// 所得税（累進・復興特別所得税2.1%込み）
 function shotokuzei(k){
   if(k <= 0) return 0;
   var r, c;
@@ -268,46 +248,63 @@ function shotokuzei(k){
   return Math.max(0, (k*r - c) * 1.021);
 }
 
-function calc(inc, shaRate, boei, shien){
-  var sha = inc * shaRate;
-  var kyu = inc - kyuyoKojo(inc);
-  var kA = Math.max(0, kyu - sha - 580000);   // 所得税：基礎控除58万
-  var kB = Math.max(0, kyu - sha - 430000);   // 住民税：基礎控除43万
-  var st = shotokuzei(kA) * boei;
-  var jt = kB * 0.10 + 5000;
-  var shienGaku = inc * shien;
-  return {sha:sha + shienGaku, st:st, jt:jt, shien:shienGaku,
-          total: sha + shienGaku + st + jt, net: inc - sha - shienGaku - st - jt};
-}
-
 document.getElementById('go').addEventListener('click', function(){
   var inc = S.income;
-
-  // 今年（2026）：社保15.23% ＋ 子育て支援金0.23%
-  var now = calc(inc, 0.1523, 1.00, 0.0023);
-  // 2027：防衛特別所得税＋1%、社保引き上げ、支援金 満額
-  var next = calc(inc, 0.1560, 1.01, 0.0035);
+  var sha = inc * 0.1523;
+  var kyu = inc - kyuyoKojo(inc);
+  var st = shotokuzei(Math.max(0, kyu - sha - 580000));
+  var jt = Math.max(0, kyu - sha - 430000) * 0.10 + 5000;
+  var total = sha + st + jt;
+  var net = inc - total;
 
   document.getElementById('inc').textContent = manInt(inc) + '万円';
-  document.getElementById('deduct').innerHTML = man(now.total) + '<small>万円</small>';
-  document.getElementById('d1').textContent = man(now.sha) + '万円';
-  document.getElementById('d2').textContent = man(now.st) + '万円';
-  document.getElementById('d3').textContent = man(now.jt) + '万円';
-  document.getElementById('perm').innerHTML = (Math.round(now.total/12/1000)/10).toFixed(1) + '<small>万円</small>';
-  document.getElementById('net').innerHTML = man(now.net) + '<small>万円</small>';
-  document.getElementById('netm').textContent = (Math.round(now.net/12/1000)/10).toFixed(1) + '万円';
+  document.getElementById('deduct').innerHTML = man(total) + '<small>万円</small>';
+  document.getElementById('d1').textContent = man(sha) + '万円';
+  document.getElementById('d2').textContent = man(st) + '万円';
+  document.getElementById('d3').textContent = man(jt) + '万円';
+  document.getElementById('net').innerHTML = man(net) + '<small>万円</small>';
+  document.getElementById('netm').textContent = (Math.round(net/12/1000)/10).toFixed(1) + '万円';
 
-  document.getElementById('net27').innerHTML = man(next.net) + '<small>万円</small>';
-  document.getElementById('diff27').textContent = man(now.net - next.net) + '万円';
-  document.getElementById('x1').textContent = man(next.st - now.st) + '万円';
-  document.getElementById('x2').textContent = man(next.shien - now.shien) + '万円';
-  document.getElementById('x3').textContent = man((next.sha - next.shien) - (now.sha - now.shien)) + '万円';
+  var saveTxt = S.save === 0 ? '0円' : (Math.round(S.save/1000)/10).toFixed(1) + '万円';
+  document.getElementById('savem').textContent = saveTxt;
+  document.getElementById('savem2').textContent = saveTxt;
 
-  var yr = S.save * 12;
-  document.getElementById('year1').innerHTML = manInt(yr) + '<small>万円</small>';
-  document.getElementById('y5').textContent  = manInt(yr*5) + '万円';
-  document.getElementById('y10').textContent = manInt(yr*10) + '万円';
-  document.getElementById('y65').textContent = manInt(yr * Math.max(0, 65 - S.age)) + '万円';
+  // ---- これからの費用（ぼかす数字） ----
+  var childTotal = 29000000;    // 混合ルート（一般的）2,900万円
+  var eduSave    = 11000000;    // 貯金で備える教育費の目安 約1,100万円
+  var collegeMonthly = 4180000 / 18 / 12;   // 私立文系大学 418万を18年で ≒ 月1.9万
+  var marriage   = 3440000;     // ゼクシィ2024 挙式・披露宴総額 約344万円
+
+  var needMonthly = collegeMonthly;
+  if (S.kids === 0){
+    // これから結婚も想定：5年で結婚資金を積むぶんを加算
+    needMonthly += marriage / 5 / 12;
+    document.getElementById('rowmarry').style.display = 'flex';
+    document.getElementById('s3h').textContent = '結婚と子育てを想定すると';
+    document.getElementById('childlbl').textContent = '子ども1人を大学まで育てる費用';
+  } else {
+    // お子さまがいる：教育費の備えに絞る
+    needMonthly = collegeMonthly;
+    document.getElementById('rowmarry').style.display = 'none';
+    document.getElementById('s3h').textContent = 'これからの子育てを想定すると';
+    document.getElementById('childlbl').textContent = 'お子さまを大学まで育てる費用';
+  }
+
+  var gap = Math.max(0, needMonthly - S.save);
+
+  document.getElementById('marry').textContent = manInt(marriage);
+  document.getElementById('child').textContent = manInt(childTotal);
+  document.getElementById('edu').textContent   = manInt(eduSave);
+  document.getElementById('needm').textContent  = (Math.round(needMonthly/1000)/10).toFixed(1);
+  document.getElementById('needm2').textContent = (Math.round(needMonthly/1000)/10).toFixed(1);
+
+  if (gap <= 0){
+    document.getElementById('gaplbl').textContent = 'いまの貯金でのそなえは';
+    document.getElementById('gap').textContent = '足りています';
+  } else {
+    document.getElementById('gaplbl').textContent = 'あと、毎月ちかづけたい額';
+    document.getElementById('gap').textContent = (Math.round(gap/1000)/10).toFixed(1) + '万';
+  }
 
   document.getElementById('form').style.display = 'none';
   document.getElementById('result').style.display = 'block';
